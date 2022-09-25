@@ -1,12 +1,19 @@
-import React, { Component } from 'react';
+import React from 'react';
 import ContactForm from "./ContactForm/ContactForm";
-import ContactList from "./ContactLIst/ContactList";
-import Filter from "./Filter/Filter";
-import Title from "./Title/Title";
+import {ContactList} from "./ContactLIst/ContactList";
+import { Filter } from "./Filter/Filter";
+import {Title} from "./Title/Title";
 import styles from '../App.module.css'
 import { nanoid } from 'nanoid';
+import { INewContact } from '../interfaces';
 
-export default class App extends Component {
+interface IState{
+  contacts: INewContact[];
+  filter: string;
+}
+
+
+export default class App extends React.Component <unknown, IState> {
   state = {
     contacts: [
       { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
@@ -18,7 +25,7 @@ export default class App extends Component {
   };
 
 
-  addContact = newContact => {
+  addContact = (newContact: Partial<INewContact>): void => {
 
   const contactsCheck = this.state.contacts.some(
     ({ name }) => name === newContact.name,
@@ -28,16 +35,14 @@ export default class App extends Component {
     return;
   }
     this.setState(prevState => ({
-      contacts: [{ ...newContact, id:nanoid()}, ...prevState.contacts],
+      contacts: [{ ...newContact, id:nanoid()}, ...prevState.contacts] as INewContact[],
   }));
 };
-  onChange = event => {
-   const {name,value}=event.currentTarget
-    this.setState({
-      [name]:value
-    });
+  onChange = (event: React.ChangeEvent<HTMLElement>): void => {
+  const { value } = event.target as unknown as EventTarget & { value: keyof IState };
+    this.setState({ filter: value } as unknown as Readonly<IState>);
   };
-onButtonDelete =  id => {
+onButtonDelete =  (id: string) => {
     this.setState({
       contacts: this.state.contacts.filter(contact => contact.id !== id),
     });
@@ -55,7 +60,7 @@ render(){
     <>
     <section className={styles.section}>
       <Title text="PhoneBook" />
-      <ContactForm addContact={this.addContact} list={this.state.contacts} />
+      <ContactForm addContact={this.addContact}  />
       <Title text="Contacts" />
         <Filter value={this.state.filter} onChange={this.onChange} />
       <ContactList filtered={filteredContacts} onButtonDelete={this.onButtonDelete}/>

@@ -1,7 +1,12 @@
 import React from 'react';
 import styles from '../Filter/Filter.module.css';
-import PropTypes from 'prop-types';
-export default function Filter({ value, onChange }) {
+interface IProps{
+  value: string,
+  onChange:(event: React.ChangeEvent<HTMLInputElement>) => void;
+  
+}
+
+export  const Filter = ({ value, onChange }:IProps):JSX.Element =>{
  
   return (
     
@@ -16,7 +21,7 @@ export default function Filter({ value, onChange }) {
     </label>
   );
 }
-Filter.propTypes = {
-  value: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired,
-};
+// Filter.propTypes = {
+//   value: PropTypes.string.isRequired,
+//   onChange: PropTypes.func.isRequired,
+// };
